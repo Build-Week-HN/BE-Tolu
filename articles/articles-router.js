@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const articlesModel = require("./articles-model");
 
+
 router.get("/", (req, res) => {
   const { sortby, sortdir } = req.query;
   articlesModel
