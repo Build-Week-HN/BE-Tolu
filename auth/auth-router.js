@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const Users = require("../users/users-models");
 
-router.post("/register", (req, res) => {
+router.post("/register", validateUser, (req, res) => {
   let user = req.body;
   const hash = bcrypt.hashSync(user.password, 10);
   user.password = hash;
@@ -17,7 +17,7 @@ router.post("/register", (req, res) => {
     });
 });
 
-router.post("/login", (req, res) => {
+router.post("/login", validateUser, (req, res) => {
   let { username, password } = req.body;
 
   Users.findBy({ username })
@@ -37,6 +37,19 @@ router.post("/login", (req, res) => {
       res.status(500).json(error);
     });
 });
+
+function validateUser(req, res, next) {
+  if (!Object.keys(req.body).length) {
+    res.status(404).json({ message: "missing user data" });
+  } else if (!req.body.username || !req.body.email || !req.body.password) {
+    res.status(404).json({
+      message:
+        "missing required text field, please check username, email or password fields"
+    });
+  } else {
+    next();
+  }
+}
 
 function generateToken(user) {
   const payload = {
