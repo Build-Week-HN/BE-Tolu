@@ -13,7 +13,7 @@ server.use(express.json());
 server.use(cors());
 
 server.use("/api/auth", authRouter);
-server.use("/api/stories", articlesRouter);
+server.use("/api/articles", articlesRouter);
 server.use("/api/users", userRouter);
 server.get("/", (req, res) => {
   res.send("Server is running");
