@@ -17,7 +17,7 @@ router.post("/register", validateUser, (req, res) => {
     });
 });
 
-router.post("/login", validateUser, (req, res) => {
+router.post("/login", validateUserLogin, (req, res) => {
   let { username, password } = req.body;
 
   Users.findBy({ username })
@@ -45,6 +45,19 @@ function validateUser(req, res, next) {
     res.status(404).json({
       message:
         "missing required text field, please check username, email or password fields"
+    });
+  } else {
+    next();
+  }
+}
+
+function validateUserLogin(req, res, next) {
+  if (!Object.keys(req.body).length) {
+    res.status(404).json({ message: "missing user data" });
+  } else if (!req.body.username ||!req.body.password) {
+    res.status(404).json({
+      message:
+        "missing required text field, please check username or password fields"
     });
   } else {
     next();
