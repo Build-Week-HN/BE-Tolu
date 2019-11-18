@@ -2,8 +2,8 @@ const axios = require("axios");
 const db = require("../database/dbConfig");
 
 var CronJob = require("cron").CronJob;
-const job = new CronJob("30 * * * *", function() {
-  console.log("You will see this message every 30 minute");
+const job = new CronJob("*/5 * * * *", function() {
+  console.log("You will see this message at every 5th minute");
   axios
     .get(`https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty`)
     .then(res => {
