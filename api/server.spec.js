@@ -1,10 +1,10 @@
 const request = require("supertest");
 const db = require("../database/dbConfig");
-
+const knex = require("../database/dbConfig");
 const server = require("./server");
 
-beforeEach(async () => {
-  await db("users").truncate();
+beforeAll(async () => {
+  return knex.seed.run();
 });
 
 describe("server.js", () => {
@@ -28,18 +28,17 @@ describe("server.js", () => {
   });
 });
 
-describe("LOGIN Endpoint", () => {
-  xit("should return status 200 on login", async () => {
-    //user registers
-    const response = await request(server)
-      .post("/api/auth/register")
-      .send({ username: "tyde", password: "password" });
-
-    //user logs in
-    const loginRes = await request(server)
+describe("POST /api/auth/login", () => {
+  test("does not allow incorrect credentials", () => {
+    return request(server)
       .post("/api/auth/login")
-      .send({ username: "tolu", email: "tolu@email.com", password: "test" });
-    expect(loginRes.status).toBe(200);
-    console.log(loginRes)
+      .send({
+        password: "test"
+      })
+      .expect({
+        message:
+          "missing required text field, please check username or password fields"
+      });
   });
+
 });
