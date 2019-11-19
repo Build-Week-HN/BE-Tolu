@@ -11,7 +11,7 @@ describe("Users model", () => {
             await Users.add({ username: "josh", email: "josh@email.com", password: "test" })
 
             const users = await db("users")
-            console.log(users)
+            //console.log(users)
             expect(users).toHaveLength(1)
         })
     })
