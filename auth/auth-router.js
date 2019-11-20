@@ -24,8 +24,7 @@ router.post("/login", validateUserLogin, (req, res) => {
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        console.log(decoded)
+
         res.status(200).json({
           message: `Welcome ${user.username}!`,
           token
@@ -41,9 +40,9 @@ router.post("/login", validateUserLogin, (req, res) => {
 
 function validateUser(req, res, next) {
   if (!Object.keys(req.body).length) {
-    res.status(404).json({ message: "missing user data" });
+    res.status(400).json({ message: "missing user data" });
   } else if (!req.body.username || !req.body.email || !req.body.password) {
-    res.status(404).json({
+    res.status(400).json({
       message:
         "missing required text field, please check username, email or password fields"
     });
@@ -68,8 +67,7 @@ function validateUserLogin(req, res, next) {
 function generateToken(user) {
   const payload = {
     sub: user.id,
-    username: user.username,
-    department: user.department
+    username: user.username
   };
   const options = {
     expiresIn: "1d"

@@ -1,3 +1,4 @@
+require('dotenv').config(); //load before using environment
 const helmet = require("helmet");
 const cors = require("cors");
 const express = require("express");

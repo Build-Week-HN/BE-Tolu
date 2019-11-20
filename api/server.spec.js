@@ -1,11 +1,6 @@
 const request = require("supertest");
-const db = require("../database/dbConfig");
-const knex = require("../database/dbConfig");
-const server = require("./server");
 
-beforeAll(async () => {
-  return knex.seed.run();
-});
+const server = require("./server");
 
 describe("server.js", () => {
   describe("server running", () => {
@@ -25,20 +20,44 @@ describe("server.js", () => {
         .set("Accept", "application/json")
         .send({ username: "tolu", email: "tolu@email.com", password: "test" });
     });
-  });
-});
+    it("can successfully login", async () => {
+      await request(server)
+        .post("/api/auth/register")
+        .set("Accept", "application/json")
+        .send({
+          username: "rue",
+          email: "rue@email.com",
+          password: "test"
+        });
 
-describe("POST /api/auth/login", () => {
-  test("does not allow incorrect credentials", () => {
-    return request(server)
-      .post("/api/auth/login")
-      .send({
-        password: "test"
-      })
-      .expect({
-        message:
-          "missing required text field, please check username or password fields"
-      });
+      let response = await request(server)
+        .post("/api/auth/login")
+        .set("Accept", "application/json")
+        .send({
+          username: "rue",
+          password: "test"
+        });
+      expect(response.status).toBe(200);
+      expect(response.body.message).toEqual(`Welcome rue!`);
+    });
+    it("does not allow incorrect credentials", () => {
+      return request(server)
+        .post("/api/auth/login")
+        .send({
+          username:"",
+          password: "test"
+        })
+        .expect({
+          message:
+            "missing required text field, please check username or password fields"
+        });
+    });
+    it("It should require authorization", () => {
+      return request(server)
+        .post("/api/auth/login")
+        .then(response => {
+          expect(response.statusCode).toBe(400);
+        });
+    });
   });
-
 });

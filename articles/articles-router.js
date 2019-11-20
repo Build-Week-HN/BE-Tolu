@@ -8,6 +8,7 @@ router.get("/", (req, res) => {
     .find()
     .orderBy(sortby || "rank", sortdir || "asc")
     .then(topArticles => {
+      //console.log(topArticles)
       res.status(200).json(topArticles);
     })
     .catch(error => {
